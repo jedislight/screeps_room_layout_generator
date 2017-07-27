@@ -10,6 +10,7 @@ per room:
 get a terrain dump by running this in screeps
     getTerrainDump : function (roomName)
     {
+        //TODO - get sources as well
         var result = [];
         for(var x = 0; x < 50; ++x) for(var y = 0; y < 50; ++y)
         {
