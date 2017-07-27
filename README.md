@@ -5,11 +5,11 @@ Reward based generative search through a screeps room layout possibility space
 
 once:
 
-npm install -g lodash
+1. npm install -g lodash
 
 per room:
 
-get a terrain dump by running this in screeps
+1. get a terrain dump by running this in screeps
 
     getTerrainDump : function (roomName)
     {
@@ -34,8 +34,10 @@ get a terrain dump by running this in screeps
         return result;
     }
 
-copy the result into initTerrain in main.js
-node main.js
-to see in progress or final results, copy the json block to the import field in http://screeps.dissi.me/buildingplanner/ and hit import
+2. copy the result into initTerrain in main.js
 
-script will terminate when it is unable to improve its design in a reasonale time (after SINCEGENERATION reaches a configured threshold, default=100)
+3. node main.js
+
+4. to see in progress or final results, copy the json block to the import field in http://screeps.dissi.me/buildingplanner/ and hit import
+
+5. script will terminate when it is unable to improve its design in a reasonale time (after SINCEGENERATION reaches a configured threshold, default=100)
