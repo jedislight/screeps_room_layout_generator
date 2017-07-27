@@ -35,7 +35,6 @@ constructor () {
 
     initScoreFunctions()
     {
-        // TODO - circumnavigability score for spawner/storage/terminal
         // TODO - accessibility of sources score
         this.weightedScoreFunctions = [
             {name : "Lab", weight : 0.5, func : (s)=>this.getLabScore(s)},
@@ -47,6 +46,7 @@ constructor () {
             {name : "Accessible", weight : 0.5, func : (s)=>this.getAccesibleScore(s)},
             {name : "Extension", weight : 2.0, func : (s)=>this.getExtensionScore(s)},
             {name : "Link", weight : 0.5, func : (s)=>this.getLinkScore(s)},
+            {name : "Circumnavigation", weight : 1.0, func : (s)=>this.getCircumnavigationScore(s)},
         ];
     }
 
@@ -383,6 +383,26 @@ constructor () {
         return -1000;
     }
 
+    getCircumnavigationScore(solution)
+    {
+        let navigablesCount = 0;
+        let navigablesNavigable = 0;
+        for(let i in solution)
+        {
+            let structureType = solution[i];
+            if(structureType == screeps.STRUCTURE_SPAWN || structureType == screeps.STRUCTURE_TERMINAL || structureType == screeps.STRUCTURE_STORAGE)
+            {
+                ++navigablesCount;
+                if(this.isCircumnavigable(solution, i))
+                {
+                    ++navigablesNavigable;
+                }
+            }
+        }
+
+        return navigablesNavigable/navigablesCount;
+    }
+
      getGCLStorageScore(solution)
     {
         let controllerPosition = this.roomTerrain.findIndex((t)=>t==screeps.STRUCTURE_CONTROLLER);
@@ -516,6 +536,20 @@ constructor () {
         }
 
         return null;
+    }
+
+    isCircumnavigable(solution, position)
+    {
+        const offsets = [-50,50,-1,1];
+        for(let i in offsets)
+        {
+            let offset = offsets[i];
+            if(!this.isAvailablePosition(parseInt(position)+offset, solution))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
 
