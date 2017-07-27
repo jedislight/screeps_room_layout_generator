@@ -8,6 +8,7 @@ once:
 npm install -g lodash
 
 per room:
+
 get a terrain dump by running this in screeps
 
     getTerrainDump : function (roomName)
