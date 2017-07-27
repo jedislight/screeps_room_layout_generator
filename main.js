@@ -46,7 +46,8 @@ constructor () {
             {name : "Accessible", weight : 0.5, func : (s)=>this.getAccesibleScore(s)},
             {name : "Extension", weight : 2.0, func : (s)=>this.getExtensionScore(s)},
             {name : "Link", weight : 0.5, func : (s)=>this.getLinkScore(s)},
-            {name : "Circumnavigation", weight : 1.0, func : (s)=>this.getCircumnavigationScore(s)},
+            {name : "CoreCircumnavigation", weight : 1.0, func : (s)=>this.getCircumnavigationScore(s)},
+            {name : "GeneralCircumnavigation", weight : 1.0, func : (s)=>this.getGeneralCircumnavigationScore(s)},
         ];
     }
 
@@ -397,6 +398,22 @@ constructor () {
                 {
                     ++navigablesNavigable;
                 }
+            }
+        }
+
+        return navigablesNavigable/navigablesCount;
+    }
+
+    getGeneralCircumnavigationScore(solution)
+    {
+        let navigablesCount = 0;
+        let navigablesNavigable = 0;
+        for(let i in solution)
+        {
+            ++navigablesCount;
+            if(this.isCircumnavigable(solution, i))
+            {
+                ++navigablesNavigable;
             }
         }
 
