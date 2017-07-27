@@ -14,7 +14,6 @@ per room:
 ```javascript
     getTerrainDump : function (roomName)
     {
-        //TODO - get sources as well
         var result = [];
         for(var x = 0; x < 50; ++x) for(var y = 0; y < 50; ++y)
         {
@@ -31,6 +30,13 @@ per room:
         
         var mineralPos = roomObject.find(FIND_MINERALS)[0].pos;
         result[mineralPos.x+mineralPos.y*50] = '"' + STRUCTURE_EXTRACTOR + '"';
+        
+        var sources = roomObject.find(FIND_SOURCES);
+        for(var i in sources)
+        {
+            var source = sources[i];
+            result[source.pos.x+source.pos.y*50] = '"' + 'source' + '"';
+        }
         
         return result;
     }
