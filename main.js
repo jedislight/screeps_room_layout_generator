@@ -53,7 +53,7 @@ constructor () {
             {name : "ExtensionStorage", weight : 1.0, func : (s)=>this.getExtensionStorageScore(s)},
             {name : "Link", weight : 0.5, func : (s)=>this.getLinkScore(s)},
             {name : "CoreCircumnavigation", weight : 1.5, func : (s)=>this.getCircumnavigationScore(s)},
-            {name : "GeneralCircumnavigation", weight : 0.5, func : (s)=>this.getGeneralCircumnavigationScore(s)},
+            {name : "GeneralCircumnavigation", weight : 1.0, func : (s)=>this.getGeneralCircumnavigationScore(s)},
             {name : "SourceAccessibilityScore", weight: 1.0, func : (s)=>this.getSourceAccessibilityScore(s)},
             {name : "SourceStorageScore", weight: 2.0, func : (s)=>this.getSourceStorageScore(s)},
         ];
