@@ -42,8 +42,8 @@ constructor () {
     initScoreFunctions()
     {
         this.weightedScoreFunctions = [
-            {name : "Lab", weight : 0.5, func : (s)=>this.getLabScore(s)},
-            {name : "LabFill", weight : 1.5, func : (s)=>this.getLabFillScore(s)},
+            {name : "Lab", weight : 1.0, func : (s)=>this.getLabScore(s)},
+            {name : "LabFill", weight : 2.0, func : (s)=>this.getLabFillScore(s)},
             {name : "Sprawl", weight : 1.5, func : (s)=>this.getSprawlScore(s)},
             {name : "Mineral", weight : 0.5, func : (s)=>this.getMineralScore(s)},
             {name : "StorageSell", weight : 1.0, func : (s)=>this.getStorageSellScore(s)},
@@ -170,7 +170,7 @@ constructor () {
         let newSolutions = []
         for(let solutionIndex in this.solutions)
         {
-            for(let i = 0; i < this.explorationRate; ++i)
+            for(let i = 0; i < Math.min(this.runsSinceGeneration||1,this.explorationRate); ++i)
             {
                 let solution = this.solutions[solutionIndex].solution.slice();
                 for(let t = 0; t <= solutionIndex+(this.runsSinceGeneration/10); ++t)
@@ -260,10 +260,16 @@ constructor () {
 
      bumpPosition(solution, pos)
     {
-        let newPos = pos + _.sample([-1,1,-49,49,-50,50,-51,51,-2,2,-98,98,-100,100,-102,102]);
+        let offset = _.sample([-1,1,-49,49,-50,50,-51,51,-2,2,-98,98,-100,100,-102,102]);
+        let newPos = pos + offset;
+        while(!this.isValidPosition(newPos, solution) && newPos >= 0 && newPos < 2500)
+        {
+            newPos += offset;
+        }
+
         if(this.isValidPosition(newPos, solution))
         {
-            return newPos;
+            return newPos;   
         }
         return pos;
     }
@@ -306,7 +312,7 @@ constructor () {
             }
         }
 
-        return 1/maxDistance;
+        return 10/maxDistance;
     }
 
      getLabScore(solution)
@@ -325,7 +331,6 @@ constructor () {
         for(let l in labs)
         {
             let lab = labs[l];
-            let closeLabs = 0;
             for(let j in labs)
             {
                 let other = labs[j];
@@ -334,7 +339,12 @@ constructor () {
                     continue;
                 }
 
-                score += .02 / this.getPositionalDistance(lab, other);
+                let distance = this.getPositionalDistance(lab, other);
+                score += .02 / distance;
+                if(distance <= 2)
+                {
+                    score += 0.1;
+                }
             }
         }
 
@@ -516,7 +526,9 @@ constructor () {
         for(let i=0; i<fillMes.length-1; ++i)
         {
             let fillMe = fillMes[i];
-            let distances = this.getPathDistance(solution, fillMe, fillMes.slice(i+1));
+            let otherFillMes = fillMes.slice();
+            otherFillMes.splice(i,1);
+            let distances = this.getPathDistance(solution, fillMe, otherFillMes, 5);
             if(distances == null)
             {
                 return -1000;
@@ -563,8 +575,12 @@ constructor () {
         return score;
     }
 
-     getPathDistance(solution, a, b)
+     getPathDistance(solution, a, b, closestLimit)
     {
+        if(closestLimit == undefined && b.length)
+        {
+            closestLimit = b.length;
+        }
         let visited = [];
         let queue = [a];
         let depthSet = [];
@@ -586,7 +602,7 @@ constructor () {
                 else if(Array.isArray(b) && b.includes(""+position))
                 {
                     results.push(depth);
-                    if(results.length == b.length)
+                    if(results.length == closestLimit)
                     {
                         return results;
                     }
